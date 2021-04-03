@@ -335,23 +335,23 @@
 
 
         }
-        function GenerateBitMap() {
-            if (document.getElementById("pauseCode").checked) return;
+        function GenerateBitMap(force=false) {
+            if (document.getElementById("pauseCode").checked && !force) return;
             let i, j;
             let value;
   
-            let methodType = "function";
-            let functionName = "draw";
+            let subroutineType = "function";
+            if (document.getElementById("methodSubroutine").checked) subroutineType = "method";
+            let subroutineName = document.getElementById("subroutineName").value;
 
             generateCode = document.getElementById('generatedCode');
-            generateCode.value =    methodType + " void " +
-                                    functionName +
+            generateCode.value =    subroutineType + " void " +
+                                    subroutineName +
                                     "(int location) {\n\tvar int memAddress; \n\tlet memAddress = 16384+location;\n";
 
             colsOfWords = GetUsedWords()
             let baseRow = 0;
             if (document.getElementById("baseTopLeft").checked) {
-                console.log(drawHeight)
                 baseRow = drawHeight;
             }
             for (let col in colsOfWords) {
@@ -459,6 +459,10 @@
                 Init();
             }
         }
+        function ChangeName() {
+            if (document.getElementById("subroutineName").value == "") document.getElementById("subroutineName").value = "draw";
+            GenerateBitMap(true);
+        }
     </script>
 </head>
 <body onload="Init();">
@@ -556,6 +560,27 @@
                         <input id="baseBottomLeft" name="baseRowFrom" onclick="GenerateBitMap()" type="radio"/>
                         <label for="baseBottomLeft">Bottom Left</label>
                     </td>
+                </tr>
+            </table>
+        </tr>
+        <tr>
+            <table>
+                <tr>
+                    <td align="center">
+                        <form action="javascript:ChangeName()">
+                            Subroutine Name: 
+                            <input id="subroutineName" placeholder="name" type="text" value="draw">
+                            <button>Generate Code</button>
+                        </form>
+                    </td>
+                    <td align="center">
+                        <input checked id="functionSubroutine" name="subroutineType" onclick="GenerateBitMap()" type="radio"/>
+                        <label for="functionSubroutine">function</label>
+
+                        <input id="methodSubroutine" name="subroutineType" onclick="GenerateBitMap()" type="radio"/>
+                        <label for="methodSubroutine">method</label>
+                    </td>
+                    
                 </tr>
             </table>
         </tr>
