@@ -13,6 +13,7 @@
 		var currentColor = null;
         var currentIShift = 0;  
         var currentJShift = 0;
+        var marginSaveFrames = 1;
         var baseI;
         var baseJ;
         var drawHeight = 0;
@@ -125,6 +126,7 @@
             DisplayGrid();
         }
         function ShiftLeft() {
+            console.log("shiftleft")
             currentJShift -= 1;
             for (i=0; i<HEIGHT; i++) {
                 for (j=0; j<WIDTH; j++) {
@@ -140,6 +142,7 @@
             DisplayGrid();
         }
         function ShiftRight() {
+            console.log("shiftright")
             _grid = InitGrid();
             currentJShift += 1;
             for (i=0; i<HEIGHT; i++) {
@@ -190,6 +193,7 @@
         }
         
         function DisplayGrid() {
+            console.log("displaygrid")
             var str = "<table border=1 cellspacing=0>";
             var i,j, backgroundColor;
             let font_style = "style='font-size:" + PIXEL_SIZE + "px' ";
@@ -243,6 +247,7 @@
             return columns.sort((a, b) => a - b);
         }
         function GetUsedWords() {
+            console.log("getusedwords")
             // returns an object of {..., -1:[[i, j], [i2, j], [i3, j]...], 0:[i, j2], 1:[i, j3], ...} for which (i,j), (i, j+1), (i, j+2), ... (i,j+15) are the coordinates of a word that is to be included in the 
             // code for the bitmap and the keys (..., -1, 0, 1, ...) are the columns that the words are in
             let words = {};
@@ -351,10 +356,33 @@
                                     this_i_in = true;
                                     break;
                                 }
-                                // add left side horizontal buffer if necessary (vertical buffer for left is added later). 
-                                // include this i if the column to the right includes it and there is a 16 or more shift to the right
-                                if (currentJShift >= 16 && columns.includes(col + 1)) {
-                                    for (l=col_index+16; l<col_index+32; l++) {
+                                ///////////
+
+                                ///////// do not only check for horizontal buffer after 16 shifts, since the wing in the middle passes the word after only
+                                ///////// a few shifts, and then is not erased until the 16 shifts, and then, had we added the buffer after a few shifts
+                                ///////// we would not have needed it after 16, since the thing would already be erased
+
+                                /////////
+
+
+                                // add horizontal buffer if necessary (vertical buffer for this is added later). 
+                                // include this i if there was a pixel on in this word before marginFramesSave shifts happened
+                                if (currentJShift > 0) {
+                                    console.log("gothere1")
+                                    // check the column to the right (starting from the left) only as far as shifting should be considered
+                                    for (l=col_index+16, m=Math.min(currentJShift, marginSaveFrames)+l; l < m; l++) {
+                                        if (l >= WIDTH) break;
+                                        if (grid[i][l] != INVERT_MODE) {
+                                            this_i_in = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else if (currentJShift < 0) {
+                                    console.log("gothere2")
+                                    // check the column to the left (starting from the right) only as far as shifting should be considered
+                                    for (l=col_index-1, m=Math.max(currentJShift, -marginSaveFrames) + l; l > m; l--) {
+                                        if (l < 0) break;
                                         if (grid[i][l] != INVERT_MODE) {
                                             this_i_in = true;
                                             break;
@@ -364,21 +392,19 @@
                             }
                             
                         }
+                
                         if (this_i_in) {
                             includedIvalues.add(i);
+                            // vertical shifting is weird, since it is never necessary (could just change location by a v*32,) so we
+                            // assume that user does it for a reason and include the full vertical buffer always, not checking
+                            // the marginFramesSave
+
                             // add the buffer region the number of rows as abs(currentIShift) in the direction of currentIShift
                             for (m=Math.min(i, i - currentIShift), n=Math.max(i, i - currentIShift); m <= n; m++) {
                                 if (m<0 || m>= HEIGHT) continue;  // ignore rows that are off the canvas and are outside of the contract
                                 includedIvalues.add(m);
                             }
                         }
-                    }
-                    // add right side horizontal buffer if necessary
-                    // (and keep track of the i-values in this column for reference in the next)
-                    if (currentJShift <= -16) {
-                        includedIvalues = new Set([...includedIvalues, ...previousColumnIncludedIvalues]);
-                        // save to previous values only the values from this column
-                        previousColumnIncludedIvalues = new Set([...includedIvalues].filter(x => !previousColumnIncludedIvalues.has(x)));;
                     }
                     
                     // add the coordinates for all the words in this column that are needed to be included
@@ -414,6 +440,7 @@
         }
 
         function GenerateCode(force=false) {
+            console.log("generatecode")
             // Generates and displayes Jack/Hack code unless pauseCode is checked, though this can be overrided with force=true
             if (document.getElementById("pauseCode").checked && !force) return;
             let i, j;
@@ -421,6 +448,7 @@
             comments = document.getElementById("commentsOn").checked;
 
             colsOfWords = GetUsedWords()
+            console.log(colsOfWords)
             let baseRow = 0;
             if (document.getElementById("baseTopLeft").checked) {
                 baseRow = drawHeight;
@@ -429,7 +457,7 @@
             generateCode = document.getElementById('generatedCode');
             let subroutineName = document.getElementById("subroutineName").value;
             if (document.getElementById("changeNameOnShift").checked) {
-                subroutineName = subroutineName + Math.abs(currentJShift).toString();
+                subroutineName = subroutineName + (Math.abs(currentJShift) / marginSaveFrames).toString();
             }
 
             if (document.getElementById("jackCode").checked) {
@@ -605,6 +633,7 @@
         }
 
         function ResetShift() {
+            console.log("resetShift")
             currentIShift = 0;
             currentJShift = 0;
             GenerateCode();
@@ -630,6 +659,7 @@
             if (isInteger(newWidth) && isInteger(newHeight) && isInteger(newPxSize)) {
                 // set the new measurements, ensuring that width is a multiple of 16 (for the sake of fullCanvas mode)
                 WIDTH = Math.floor(parseInt(newWidth)/16) * 16;
+                document.getElementById("inputWidth").value = WIDTH.toString();
                 HEIGHT = parseInt(newHeight);
                 PIXEL_SIZE = parseInt(newPxSize);
                 Init();
@@ -640,7 +670,7 @@
             GenerateCode(true);
         }
         function ChangeCodeType() {
-            console.log()
+            console.log("changecodetype")
             if (document.getElementById("hackAssemblyCode").checked) {
                 document.getElementById("baseTopLeft").click();
                 document.getElementById("baseBottomLeft").disabled = true;
@@ -649,6 +679,21 @@
             else {
                 document.getElementById("baseBottomLeft").disabled = false;
                 document.getElementById("codeTypeHeader").textContent = "Generated Jack Code";
+            }
+            GenerateCode();
+        }
+        function UpdateMarginType() {
+            console.log("updatemargin")
+            if (document.getElementById("fitToDrawing").checked) {
+                document.getElementById("marginSaveFramestd").hidden = false;
+                marginSaveFrames = parseInt(document.getElementById("marginSaveFrames").value)
+                if (marginSaveFrames < 1) {
+                    marginSaveFrames = 1;
+                    document.getElementById("marginSaveFrames").value = "1";
+                }
+            }
+            else {
+                document.getElementById("marginSaveFramestd").hidden = true;
             }
             GenerateCode();
         }
@@ -735,14 +780,19 @@
             <table>
                 <tr>
                     <td align="center">
-                        <input checked id="fitToDrawing" name="marginType" onclick="GenerateCode()" type="radio"/>
+                        <input id="fitToDrawing" name="marginType" onclick="UpdateMarginType()" type="radio"/>
                         <label for="fitToDrawing">Fit to drawing</label>
 
-                        <input id="enforceRectangular" name="marginType" onclick="GenerateCode()" type="radio"/>
+                        <input checked id="enforceRectangular" name="marginType" onclick="UpdateMarginType()" type="radio"/>
                         <label for="enforceRectangular">Rectangular</label>
 
-                        <input id="fullCanvas" name="marginType" onclick="GenerateCode()" type="radio"/>
+                        <input id="fullCanvas" name="marginType" onclick="UpdateMarginType()" type="radio"/>
                         <label for="fullCanvas">Full Canvas</label>
+                    </td>
+                    <td>&nbsp</td>
+                    <td id="marginSaveFramestd">
+                        <label for="marginSaveFrames"># horizontal shifts per animation frame: </label>
+                        <input id="marginSaveFrames" maxlength="2" onchange="UpdateMarginType()" size="1" type="text" value="1">
                     </td>
                 </tr>
             </table>
