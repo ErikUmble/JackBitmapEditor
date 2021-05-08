@@ -23,12 +23,19 @@ Switches all white pixels to black and vice-versa.
 ##### Inverted Mode
 For drawing with white on a black background. This mode expects the background to be black, erases by making pixels black, and interprets the drawing as the white pixels on the canvas
 
+##### Obvious Word Edges
+The Hack screen is implemented as a chunk of RAM, where each address stores a 16 bit number corresponding with the state of 16 pixels on the screen. The JackBitmapEditor uses red lines to represent the left edge of each of these 16 pixels groups (the placement of these groups depends on whether the mode is on 'Full Canvas' or 'Fit to Drawing'/'Rectanglar'). Use this checkbox to make these lines thick and red, rather than just red.
+
 ##### Canvas Size
 Change the number of pixels in each row (width) and column (height). Pixel size refers to the size of the squares on the canvas, and should be decreased as necessary for very large canvas sizes.
 
 ##### Margin Type
-On 'Fit to Drawing,' code will only be generated for the parts of the canvas that include the drawing. On 'Rectangular,' the code will be generated for the bitmap made by the 
-smallest rectangle enclosing the rectangle. On 'Full Canvas,' code is generated for every pixel on the canvas, no matter how much space the drawing takes up.
+You can choose the amount of the canvas that gets included in the generated code. On 'Fit to Drawing,' code will only be generated for the parts of the canvas that include the drawing. On 'Rectangular,' the code will be generated for the bitmap made by the 
+smallest rectangle enclosing the rectangle. On 'Full Canvas,' code is generated for every pixel on the canvas, no matter how much space the drawing takes up. (Note that in
+determaining where the drawing is, black pixels are interpreted as drawing normally, while white pixels are considered the drawing on inverted mode).
+
+##### # Horizontal Shifts per Animation Frame (not on 'Full Canvas' mode)
+If you plan on creating an animation by copying the code and shifting once horizontally between each frame, leave this on one. If you instead use the shift buttons x times between frames, set this to x. This field influences two things: the rate at which the subroutine name changes as you shift (if the corresponding checkbox is checked), and the "memory" of where the drawing was, which is used to generate code that erases residue of the drawing after it has shifted out of a 16 pixel word. 
 
 ##### Base Address
 The Hack screen is made up of 256 rows of 32 words, each of wich is a 16-bit number that corresponds with 16 pixels. Location in the Jack code refers to the word that the drawing should start on in the screen. On 'Top Left' mode, the location (base address) referes to the top left corner of the drawing, and code in this mode matches that of previous versions of the BitmapEditor.html. Use 'Bottom Left' if you find it easier to specify screen coordinate locations in that format. 
