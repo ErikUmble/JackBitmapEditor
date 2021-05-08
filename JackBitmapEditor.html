@@ -20,6 +20,7 @@
         var includeShift = true;
         var INVERT_MODE = false;
         var comments = true;
+        var columns = [0, 1, 2];
 
 		function pickColor(cell){
 			var i = cell.id / WIDTH |0;
@@ -46,8 +47,6 @@
 
             // enable/disable the rotate button depending on if the canvas is square
             document.getElementById("rotateButton").disabled = (WIDTH != HEIGHT);
-            console.log(GetColumns(28-6, 64-6, 28))
-            
 
             /*const inputImage = document.getElementById("inputImage");
             inputImage.addEventListener("change", (event) => {
@@ -192,7 +191,7 @@
         }
         
         function DisplayGrid() {
-            var str = "<table border=1 cellspacing=0>";
+            var str = '<table id="canvas" border=1 cellspacing=0>';
             var i,j, backgroundColor;
             let font_style = "style='font-size:" + PIXEL_SIZE + "px' ";
             for (i=-1; i<HEIGHT; i++) {
@@ -215,11 +214,23 @@
                 }
                 str=str+"</tr>";
             }
-            str=str+"</table>"
-
+            str=str+"</table>";
             gridElement = document.getElementById('grid');
             gridElement.innerHTML = str;
             GenerateCode();
+        }
+        function UpdateStyling() {
+            // add styling to signify the word edge interpretation
+            str = "<style>";
+            if (document.getElementById("obviousStyling").checked) {
+                red_width = "thick";
+            } 
+            else {red_width = "thin";}
+            for (const col of columns) {
+                str += "#grid table td:nth-child("+ (col*16 + baseJ + 2).toString() + ") {border-color: grey grey grey red; border-width:thin thin thin "+red_width+"}";
+            }
+            str += "</style";
+            document.getElementById("style_stuff").innerHTML = str;
         }
 
         function OnCellOver(cell) {
@@ -236,14 +247,22 @@
             GenerateCode();
         }
         function GetColumns(leftJ, rightJ, baseJ) {
+            /*
+                Divides the line segment between leftJ and rightJ into divisions of width 16, making sure that baseJ is the start of one of those divisions,
+                then it returns those divisions, relative baseJ (and only returns divisions that contain at least part of the line segment)
+                so GetColumns(0, 5, 0) should return [0] since there is 1 division that starts 0*16 units away from baseJ=0
+                and GetColumns(0, 5, 3) should return [-1, 0] since baseJ enforces a split in the segment
+                and GetColumns(0, 5, 6) should return [-1] because the entire distance between leftJ and rightJ fits in the chunk that starts at baseJ + (-16*1)
+            */
+
             let leftmost = Math.min(0, -(Math.ceil( (baseJ - leftJ)/16) ));
-            let rightmost = Math.max(0, -(Math.floor( (baseJ - rightJ)/16 )));  /////////////////////////// should be floor i think
+            let rightmost = Math.max(0, (Math.floor( (rightJ - baseJ)/16 )));
             let columns = []
             for (let i = leftmost; i < rightmost + 1; i++) {
                 columns.push(i);
             }
-            console.log(columns)
-            return columns.sort((a, b) => a - b);
+            if ((rightJ < baseJ) || (leftJ > (baseJ + 16))) {columns.splice(columns.indexOf(0), 1);}
+            return columns;
         }
         function GetUsedWords() {
             // returns an object of {..., -1:[[i, j], [i2, j], [i3, j]...], 0:[i, j2], 1:[i, j3], ...} for which (i,j), (i, j+1), (i, j+2), ... (i,j+15) are the coordinates of a word that is to be included in the 
@@ -259,9 +278,9 @@
             let topI = 0;
             baseI = HEIGHT - 1;
             
-
             // find drawing borders, unless the user wants the whole canvas to be included in the bitmap
-            if (!document.getElementById("fullCanvas".checked)) {
+            if (!document.getElementById("fullCanvas").checked) {
+                
                 let breaker = false;
                 for  (let j = 0; j < WIDTH; j++) {
                     if (breaker) break;
@@ -310,14 +329,17 @@
                     // adjust base for shifting
                     baseJ = leftJ - currentJShift;
                     baseI = bottomI - currentIShift;
+
+                    // extend rightJ and leftJ if necessary, to account for shift in drawing
+                    rightJ = Math.max(rightJ, rightJ - currentJShift);
+                    leftJ = Math.min(leftJ, leftJ - currentJShift);
                 }
                 else {
                     baseJ = leftJ
                     baseI = bottomI;
                 } 
             }
-
-            let columns = GetColumns(leftJ, rightJ, baseJ);
+            columns = GetColumns(leftJ, rightJ, baseJ);
             let previousColumnIncludedIvalues = new Set();
             for (const col of columns) {
                 this_col = [];
@@ -326,6 +348,7 @@
                 
                 // if fullCanvas, then use all the words from i=0 to i=HEIGHT-1
                 if (document.getElementById("fullCanvas").checked) {
+                    
                     for (i=0; i < HEIGHT; i++) {
                         this_col.push([i, col_index]);
                     }
@@ -502,11 +525,11 @@
                     
                 if (comments) generateCode.value += "\t// return\n";
                 generateCode.value += "\t@R13\n\tA=M\n\tD;JMP\n";
-                
             }
             
 
-            
+            // update styling in case boundaries changed
+            UpdateStyling();
         }
         function GetWordValue(i, j) {
             // given the coordinates i, j of the start of a 16 pixel series corresponding with a 16-bit integer in RAM, returns the base_10 
@@ -684,7 +707,7 @@
 </head>
 <body onload="Init();">
     <h4><i>Idea and first code by Golan Parashi, updated by Ignacio del Valle Alles, and extended by Erik Umble </i></h4>
-    <h1>Jack Bitmap Editor</h1>
+    <h1>Jack Bitmap Editor v2.5</h1>
     <p>This is a simple bitmap editor, with a special emphasis on making animation frames easier. Simply draw and the Jack code to produce the drawing will be displayed
         on the right. Note that if your drawing does not fill the canvas, the code will only be generated for the part that your drawing takes up with 'location' in the 
         code referring to the top left corner of the drawing (this can be changed to refer to the bottom left with the radio button below). 
@@ -708,7 +731,11 @@
         Note that the assembly subroutine expects to find location stored in R12 and code return address in R13. By taking 
         advantage of the fact that a drawing might have screen words that are on the same row, and that in assembly, assigning -1, 0, or 1 is built in, and by eliminating the costly function call,
          and with a hack assembly trick, this code can take significantly less machine opperations than the corresponding Jack code (though the Jack is quite optimized as well). 
-         <!--For more details, see <a href="">demo</a>-->
+     See <a href="https://github.com/ErikUmble/JackBitmapEditor">here</a> for updates and tutorials.
+    </p>
+    <p>
+        <b>Whats new?:</b> now it's more clear where the 16 bit word edges are (they are in red and can be made thick using the 'Obvious Word Edges' checkbox) and are the leftmost side of the columns in the code.
+        On 'Fit to Drawing' mode, these edges adapt to the size of the drawing, but you can move the drawing relative these edges simply by using the shift buttons. Also, I found and fixed a few bugs.
     </p>
     
     <p>
@@ -718,6 +745,7 @@
                 <th align="left">Bitmap</th>
                 <th align="left"><span  id="codeTypeHeader">Generated Jack Code</span></th>
             </tr>
+            <div id="style_stuff"></div>
         </thead>
         <tr>
             <td><div id="grid"/></td>
@@ -739,6 +767,7 @@
                     <td>&nbsp</td>
                     <td align="center"><input id="pauseCode" onclick="GenerateCode()" type="checkbox"/><label for="pauseCode">Pause Code Generation</label></td>
                     <td align="center"><input checked id="commentsOn" onclick="GenerateCode()" type="checkbox"/><label for="commentsOn">Comments On</label></td>
+                    <td align="center"><input id="obviousStyling" onclick="UpdateStyling()" type="checkbox"/><label for="obviousStyling">Obvious Word Edges</label></td>
                 </tr>
             </table>
         </tr>
