@@ -40,6 +40,9 @@ If you plan on creating an animation by copying the code and shifting once horiz
 ##### Base Address
 The Hack screen is made up of 256 rows of 32 words, each of wich is a 16-bit number that corresponds with 16 pixels. Location in the Jack code refers to the word that the drawing should start on in the screen. On 'Top Left' mode, the location (base address) referes to the top left corner of the drawing, and code in this mode matches that of previous versions of the BitmapEditor.html. Use 'Bottom Left' if you find it easier to specify screen coordinate locations in that format. 
 
+##### Hack Assembly
+By generating code directly in assembly, the result can be significantly more efficient than the Jack code that gets compiled into assembly (can be roughly 50-70% less machine instructions for certain drawings, but is always at least as efficient as the Jack code). This feature is useful for those who are programming in assembly, or wanting extreamly time-critical graphics (in which case, the programmer may need to compile their source code, add the graphics functions, and adapt the program to call the graphics functions according to the specification).
+
 ## Contributers
 Golan Parashi, Ignacio del Valle Alles, and Erik Umble (Shimon Schocken and Noam Nisan developed the Jack programming language).
 
