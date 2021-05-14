@@ -8,7 +8,7 @@ Made for use in the course nand2tetris <https://nand2tetris.org>
 Open JackBitmapEditor.html in a browser and get creative.
 
 ## Demo
-coming soon...
+https://youtu.be/a9NakmoimJI
 
 ## Features
 Details on specific features of the program.
