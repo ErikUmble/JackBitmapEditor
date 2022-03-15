@@ -15,7 +15,7 @@ Details on specific features of the program.
 
 ##### Shift Buttons
 Moves the enire drawing one pixel in the direction specified. Keeps track of the amount shifted in each direction to include a buffer that erases the parts of previous frames
-in which the sprite has moved out of. To remove this buffer effect, use 'Clear Shift.'
+in which the sprite has moved out of. To remove this buffer effect, use 'Clear Shift.' The code generated to erase previous frame parts only considered absolute shift (5 shifts up and 2 shifts down is equivalent to 3 shifts up); if this seems counterintuitive or unhelpful, let me know and I will consider changing the behavior. 
 
 ##### Invert
 Switches all white pixels to black and vice-versa.
