@@ -714,7 +714,7 @@
     </p>
     <p>
         Note that you can create sequencial frames of an animation by using the shift buttons (a buffer is created in the code such that
-         calling a function that refers to the next animation frame will automatically erase the area that the sprite has moved out of).
+         calling a function that refers to the next animation frame will automatically erase the area that the sprite has moved out of). Internally, it is just the absolute shift that is considered (shifting up 5 times and then down 2 times will produce equivalent code to simply shifting up 3 times), so to make animation frames moving in the opposite direction, first clear the shift then begin shifting in that direction. 
          Also note that you can enter Inverted mode for drawing with white on a black canvas for night/dark themed games 
          (this mode expects the background to be black, erases by making pixels black, and interprets the drawing as the white pixels on the canvas). Rotation is only 
          enabled for square canvas sizes (width = height), and automatically clears the shift upon rotating. 
