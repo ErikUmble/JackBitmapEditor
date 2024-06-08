@@ -671,6 +671,7 @@
          }
         function ResetSize() {
             // resets the canvas width, height, and pixel size to the values specified by input fields as long as both fields contain integer values
+            localStorage.removeItem("grid"); // clear local storage to reset the canvas
             newWidth = document.getElementById("inputWidth").value;
             newHeight  = document.getElementById("inputHeight").value;
             newPxSize = document.getElementById("pixelSize").value;
@@ -717,7 +718,7 @@
 </head>
 <body onload="Init();">
     <h4><i>Idea and first code by Golan Parashi, updated by Ignacio del Valle Alles, and extended by Erik Umble </i></h4>
-    <h1>Jack Bitmap Editor v2.5</h1>
+    <h1>Jack Bitmap Editor v2.6</h1>
     <p>This is a simple bitmap editor, with a special emphasis on making animation frames easier. Simply draw and the Jack code to produce the drawing will be displayed
         on the right. Note that if your drawing does not fill the canvas, the code will only be generated for the part that your drawing takes up with 'location' in the 
         code referring to the top left corner of the drawing (this can be changed to refer to the bottom left with the radio button below). 
@@ -744,8 +745,7 @@
      See <a href="https://github.com/ErikUmble/JackBitmapEditor">here</a> for updates and tutorials.
     </p>
     <p>
-        <b>Whats new?:</b> now it's more clear where the 16 bit word edges are (they are in red and can be made thick using the 'Obvious Word Edges' checkbox) and are the leftmost side of the columns in the code.
-        On 'Fit to Drawing' mode, these edges adapt to the size of the drawing, but you can move the drawing relative these edges simply by using the shift buttons. Also, I found and fixed a few bugs.
+        <b>Whats new in 2.7?:</b> Your bitmap is now saved in browser storage (tested in Chrome), so you do not lose it if you close and reopen the editor. Use the Reload button to clear contents if needed.
     </p>
     
     <p>
@@ -790,7 +790,7 @@
                             <input id="inputWidth" placeholder="width" maxlength="3" size="3" type="text" value="48">
                             x
                             <input id="inputHeight" placeholder="height" maxlength="3" size="3" type="text" value="32">
-                            <button>Reload</button>
+                            <button title="Reset Canvas Size and Clear Contents">Reload</button>
                             <label for="pixelSize">Canvas pixel size: </label>
                             <input id="pixelSize" placeholder="px" maxlength="2" size="1" type="text" value="16">
                         </form>
