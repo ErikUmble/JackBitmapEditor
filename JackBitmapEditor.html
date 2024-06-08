@@ -4,7 +4,7 @@
 <head>
     <title>Jack Bitmap Editor</title>
     <script type="text/javascript">
-        // initializer global variables
+        // initialize global variables
         var grid = new Array(0);
         var WIDTH = 48;
         var HEIGHT = 32;
@@ -43,6 +43,7 @@
 		
         function Init() {
             grid = InitGrid();
+            localStorage.setItem("grid", JSON.stringify(grid))
             DisplayGrid(); 
 
             // enable/disable the rotate button depending on if the canvas is square
@@ -55,12 +56,18 @@
         }
 
         function InitGrid() {
-            var _grid = new Array(HEIGHT);
-            for (i=0; i<HEIGHT; i++) {
-                _grid[i] = new Array(WIDTH);
-                for (j=0; j<WIDTH; j++) {
-                    _grid[i][j]=false;
+            var _grid;
+            if(!localStorage.getItem("grid")){
+                _grid = new Array(HEIGHT);
+                for (i=0; i<HEIGHT; i++) {
+                    _grid[i] = new Array(WIDTH);
+                    for (j=0; j<WIDTH; j++) {
+                        _grid[i][j]=false;
+                    }
                 }
+                
+            }else{
+                _grid = JSON.parse(localStorage.getItem("grid"))
             }
             return _grid;
         }
@@ -237,14 +244,17 @@
 			if(currentColor==null){
 				return;
 			}
-            var i = cell.id / WIDTH |0;
+           
+            var i = cell.id / WIDTH | 0;
             var j = cell.id - i*WIDTH;
             grid[i][j] = currentColor;
             if (grid[i][j])
                 cell.style.backgroundColor = "black";
             else
                 cell.style.backgroundColor = "white";
+            
             GenerateCode();
+            localStorage.grid = JSON.stringify(grid);
         }
         function GetColumns(leftJ, rightJ, baseJ) {
             /*
