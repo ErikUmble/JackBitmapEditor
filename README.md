@@ -1,6 +1,9 @@
 # JackBitmapEditor
 A convenient program for making it easier to create sprites and animations for the Jack (Hack) platform. 
 
+## Version
+2.6 (added localStorage to save drawing even if tab is closed)
+
 ## Background
 Made for use in the course nand2tetris <https://nand2tetris.org>
 
@@ -8,7 +11,7 @@ Made for use in the course nand2tetris <https://nand2tetris.org>
 Open JackBitmapEditor.html in a browser and get creative.
 
 ## Demo
-https://youtu.be/a9NakmoimJI
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/a9NakmoimJI?si=et4EFQONo0M2CB2S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Features
 Details on specific features of the program.
@@ -44,7 +47,8 @@ The Hack screen is made up of 256 rows of 32 words, each of wich is a 16-bit num
 By generating code directly in assembly, the result can be significantly more efficient than the Jack code that gets compiled into assembly (can be roughly 50-70% less machine instructions for certain drawings, but is always at least as efficient as the Jack code). This feature is useful for those who are programming in assembly, or wanting extreamly time-critical graphics (in which case, the programmer may need to compile their source code, add the graphics functions, and adapt the program to call the graphics functions according to the specification).
 
 ## Contributers
-Golan Parashi, Ignacio del Valle Alles, and Erik Umble (Shimon Schocken and Noam Nisan developed the Jack programming language).
+Golan Parashi, Ignacio del Valle Alles, Erik Umble, and Dino Krivić (Shimon Schocken and Noam Nisan developed the Jack programming language).
+If you think of any improvements, feel free to submit an issue or a pull request.
 
 ## License
 GNU General Public

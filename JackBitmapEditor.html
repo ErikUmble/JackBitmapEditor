@@ -717,37 +717,10 @@
     </script>
 </head>
 <body onload="Init();">
-    <h4><i>Idea and first code by Golan Parashi, updated by Ignacio del Valle Alles, and extended by Erik Umble </i></h4>
     <h1>Jack Bitmap Editor v2.6</h1>
-    <p>This is a simple bitmap editor, with a special emphasis on making animation frames easier. Simply draw and the Jack code to produce the drawing will be displayed
-        on the right. Note that if your drawing does not fill the canvas, the code will only be generated for the part that your drawing takes up with 'location' in the 
-        code referring to the top left corner of the drawing (this can be changed to refer to the bottom left with the radio button below). 
-    </p>
     <p>
-        Note that you can create sequencial frames of an animation by using the shift buttons (a buffer is created in the code such that
-         calling a function that refers to the next animation frame will automatically erase the area that the sprite has moved out of). Internally, it is just the absolute shift that is considered (shifting up 5 times and then down 2 times will produce equivalent code to simply shifting up 3 times), so to make animation frames moving in the opposite direction, first clear the shift then begin shifting in that direction. 
-         Also note that you can enter Inverted mode for drawing with white on a black canvas for night/dark themed games 
-         (this mode expects the background to be black, erases by making pixels black, and interprets the drawing as the white pixels on the canvas). Rotation is only 
-         enabled for square canvas sizes (width = height), and automatically clears the shift upon rotating. 
+      See <a href="https://github.com/ErikUmble/JackBitmapEditor">here</a> for updates, feature documentation, and contributers.
     </p>
-    <p>
-        If you would rather work on a different sized canvas, simply change the height and width fields and click reload. Note that for very large canvas sizes,
-         you might need to change the canvas pixel size to a smaller value. Also note that width must be a multiple of 16. 'Comments On' referes to the comments in the 
-         Jack code that specify the column of the drawing that the following code is for (column 1 is to the right of column 0, which is to the right of column -1 and so on).
-          If your device is running slow on automatic code generation, you can use 
-         'Pause Code Generation', draw, then unselect the field when you are ready to get the code.
-    </p>
-    <p>
-        For the most optimized code, choose Hack Assembly (note that a base location of Top Left is required in this mode, as it is more efficient in assembly). 
-        Note that the assembly subroutine expects to find location stored in R12 and code return address in R13. By taking 
-        advantage of the fact that a drawing might have screen words that are on the same row, and that in assembly, assigning -1, 0, or 1 is built in, and by eliminating the costly function call,
-         and with a hack assembly trick, this code can take significantly less machine opperations than the corresponding Jack code (though the Jack is quite optimized as well). 
-     See <a href="https://github.com/ErikUmble/JackBitmapEditor">here</a> for updates and tutorials.
-    </p>
-    <p>
-        <b>Whats new in 2.7?:</b> Your bitmap is now saved in browser storage (tested in Chrome), so you do not lose it if you close and reopen the editor. Use the Reload button to clear contents if needed.
-    </p>
-    
     <p>
     <table>
         <thead>
