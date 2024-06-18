@@ -11,7 +11,7 @@ Made for use in the course nand2tetris <https://nand2tetris.org>
 Open JackBitmapEditor.html in a browser and get creative.
 
 ## Demo
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/a9NakmoimJI?si=et4EFQONo0M2CB2S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Video Demo](https://img.youtube.com/vi/a9NakmoimJI/0.jpg)](https://www.youtube.com/watch?v=a9NakmoimJI)
 
 ## Features
 Details on specific features of the program.
