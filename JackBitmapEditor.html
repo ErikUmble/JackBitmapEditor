@@ -6,9 +6,9 @@
     <script type="text/javascript">
         // initialize global variables
         var grid = new Array(0);
-        var WIDTH = 48;
-        var HEIGHT = 32;
-        var PIXEL_SIZE = "16";
+        var WIDTH = localStorage.getItem("width") || 48;
+        var HEIGHT = localStorage.getItem("height") || 32;
+        var PIXEL_SIZE = localStorage.getItem("pixelSize") || "16";
         var BINARY_BITS = 16;
 		var currentColor = null;
         var currentIShift = 0;  
@@ -43,12 +43,16 @@
 		
         function Init() {
             grid = InitGrid();
+           
             localStorage.setItem("grid", JSON.stringify(grid))
+            
             DisplayGrid(); 
 
             // enable/disable the rotate button depending on if the canvas is square
             document.getElementById("rotateButton").disabled = (WIDTH != HEIGHT);
-
+            document.getElementById("inputWidth").value = WIDTH;
+            document.getElementById("inputHeight").value = HEIGHT;
+            document.getElementById("pixelSize").value = PIXEL_SIZE;
             /*const inputImage = document.getElementById("inputImage");
             inputImage.addEventListener("change", (event) => {
                 loadImage(event.target.files[0])
@@ -69,6 +73,7 @@
             }else{
                 _grid = JSON.parse(localStorage.getItem("grid"))
             }
+           
             return _grid;
         }
         /*
@@ -201,6 +206,7 @@
             var str = '<table id="canvas" border=1 cellspacing=0>';
             var i,j, backgroundColor;
             let font_style = "style='font-size:" + PIXEL_SIZE + "px' ";
+            
             for (i=-1; i<HEIGHT; i++) {
                 str=str+"<tr>";
                 for (j=-1; j<WIDTH; j++) {
@@ -211,7 +217,6 @@
                     } else if (i ==-1 && j == -1) {
                         str=str+"<td/>";
                     } else {
-
                         if (grid[i][j] == true)
                             backgroundColor = "black";
                         else
@@ -670,20 +675,65 @@
             return /^\d+$/.test(value);
          }
         function ResetSize() {
-            // resets the canvas width, height, and pixel size to the values specified by input fields as long as both fields contain integer values
+            // resets the canvas width, height, and pixel size to the default values
             localStorage.removeItem("grid"); // clear local storage to reset the canvas
-            newWidth = document.getElementById("inputWidth").value;
-            newHeight  = document.getElementById("inputHeight").value;
-            newPxSize = document.getElementById("pixelSize").value;
+            localStorage.removeItem("width"); 
+            localStorage.removeItem("height"); 
+            localStorage.removeItem("pixelSize"); 
+            
+            //global vars
+            WIDTH = 48;
+            HEIGHT = 32;
+            PIXEL_SIZE = 16;
+
+            document.getElementById("inputWidth").value = WIDTH.toString();
+            document.getElementById("inputHeight").value = HEIGHT.toString();
+            document.getElementById("pixelSize").value = PIXEL_SIZE.toString();
+
+            Init();
+        }
+
+        function SetSize(){
+            // sets the canvas width, height, and pixel size to the values specified by input fields as long as both fields contain integer values
+            var newWidth = document.getElementById("inputWidth").value;
+            var newHeight  = document.getElementById("inputHeight").value;
+            var newPxSize = document.getElementById("pixelSize").value;
+
             if (isInteger(newWidth) && isInteger(newHeight) && isInteger(newPxSize)) {
                 // set the new measurements, ensuring that width is a multiple of 16 (for the sake of fullCanvas mode)
-                WIDTH = Math.floor(parseInt(newWidth)/16) * 16;
-                document.getElementById("inputWidth").value = WIDTH.toString();
-                HEIGHT = parseInt(newHeight);
-                PIXEL_SIZE = parseInt(newPxSize);
+                newWidth = Math.floor(parseInt(newWidth)/16) * 16;
+                document.getElementById("inputWidth").value = newWidth.toString();
+                newHeight = parseInt(newHeight);
+                newPxSize = parseInt(newPxSize);
+
+                if(newWidth == WIDTH && newHeight == HEIGHT && newPxSize == PIXEL_SIZE) return;
+
+                var currGrid = JSON.parse(localStorage.getItem("grid"));
+                var newGrid = new Array(newHeight);
+
+                for(var i = 0; i < newHeight; i++){
+                    newGrid[i] = new Array(newWidth);
+                    for(var j = 0; j < newWidth; j++){
+                        if(j < WIDTH && i < HEIGHT){
+                            newGrid[i][j] = currGrid[i][j];
+                        }else{
+                            newGrid[i][j] = false;
+                        }
+                    }
+                } 
+
+                WIDTH = newWidth;
+                HEIGHT = newHeight;
+                PIXEL_SIZE = newPxSize;
+                
+                localStorage.setItem("grid", JSON.stringify(newGrid));
+                localStorage.setItem("width", WIDTH);
+                localStorage.setItem("height", HEIGHT);
+                localStorage.setItem("pixelSize", PIXEL_SIZE);
                 Init();
             }
         }
+
         function ChangeName() {
             if (document.getElementById("subroutineName").value == "") document.getElementById("subroutineName").value = "draw";
             GenerateCode(true);
@@ -763,9 +813,12 @@
                             <input id="inputWidth" placeholder="width" maxlength="3" size="3" type="text" value="48">
                             x
                             <input id="inputHeight" placeholder="height" maxlength="3" size="3" type="text" value="32">
-                            <button title="Reset Canvas Size and Clear Contents">Reload</button>
+                        
                             <label for="pixelSize">Canvas pixel size: </label>
                             <input id="pixelSize" placeholder="px" maxlength="2" size="1" type="text" value="16">
+
+                            <button title="Resize Canvas and Preserve Contents" formaction="javascript:SetSize()">Resize</button>
+                            <button title="Reset Canvas Size and Clear Contents">Reload</button>
                         </form>
                     </td>
                 </tr>
