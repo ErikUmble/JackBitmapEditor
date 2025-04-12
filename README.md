@@ -47,7 +47,8 @@ The Hack screen is made up of 256 rows of 32 words, each of wich is a 16-bit num
 By generating code directly in assembly, the result can be significantly more efficient than the Jack code that gets compiled into assembly (can be roughly 50-70% less machine instructions for certain drawings, but is always at least as efficient as the Jack code). This feature is useful for those who are programming in assembly, or wanting extreamly time-critical graphics (in which case, the programmer may need to compile their source code, add the graphics functions, and adapt the program to call the graphics functions according to the specification).
 
 ##### Import
-You can import a BMP file (24-bit depth) or a PNG file to the canvas. It will act like you drew it on the canvas. Only use colors black (#000000) and white (#ffffff) to prevent unexpected results.
+You can import a BMP file (24-bit depth) or a PNG file to the canvas. It will act like you drew it on the canvas. Only use colors black (#000000) and white (#ffffff) to prevent unexpected results. Canvas
+size will become the image size (rouned up to nearest multiple of 16 in height and width).
 
 ## Contributers
 Golan Parashi, Ignacio del Valle Alles, Erik Umble, Dino Krivić and Noa Vermeersch (Shimon Schocken and Noam Nisan developed the Jack programming language).
