@@ -53,10 +53,6 @@
             document.getElementById("inputWidth").value = WIDTH;
             document.getElementById("inputHeight").value = HEIGHT;
             document.getElementById("pixelSize").value = PIXEL_SIZE;
-            /*const inputImage = document.getElementById("inputImage");
-            inputImage.addEventListener("change", (event) => {
-                loadImage(event.target.files[0])
-            })*/
         }
 
         function InitGrid() {
@@ -76,31 +72,7 @@
            
             return _grid;
         }
-        /*
-        // Working on it
-        function loadImage(file, type) {
-            // Check if the file is an image.
-            if (file.type && !file.type.startsWith('image/')) {
-                console.log('File is not an image.', file.type, file);
-                return;
-            }
-            // for now, only png is supported
-            if (!file.type.startsWith('image/png')) return;
-            
-            const reader = new FileReader();
-            reader.addEventListener('load', (event) => {
-                new PNG({filterType: 4}).parse(event.target.result, function(error, image){
-                    if(error) return;
-                    const signature = [137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82];
-                    for (let i = 0; i < signature.length; i++) {  
-                    if (byteArray[i] !== signature[i]) {
-                        return false;
-                    }
-                    }
-                });
-            });
-            reader.readAsArrayBuffer(file);
-        }*/
+    
         function RotateBitmapRight() {
             // for now, rotate only works for square canvas, and rotates the entire canvas by 90 degrees
             if (HEIGHT != WIDTH) return;
@@ -785,14 +757,22 @@
             <td><textarea id="generatedCode" cols="50" rows="48" readonly="read-only"></textarea></td>                                
         </tr>
         <tr>
-            <td>
-              <label class="fileButton" for="inputImage">Import BMP (24-bit) or PNG file (use only black and white as colors to prevent unexpected results)</label>
-              <input type="file" id="inputImage" accept=".bmp, .png, image/bmp, image/png">
-            </td>
-        </tr>
-        <tr>
             <table>
                 <tr>
+                    <td align="center">
+                        <input
+                            type="file"
+                            id="inputImage"
+                            accept=".bmp, .png, image/bmp, image/png"
+                            style="display: none;"
+                        >
+                        <input
+                            type="button"
+                            value="Import Image"
+                            title="Import BMP (24-bit) or PNG (black and white) file"
+                            onclick="document.getElementById('inputImage').click();"
+                        >
+                      </td>
                     <td align="center"><input type="button" value="Shift left <" onclick="ShiftLeft()"/></td>
                     <td align="center"><input type="button" value="Shift right >" onclick="ShiftRight()"/></td>
                     <td align="center"><input type="button" value="Shift up ^" onclick="ShiftUp()"/></td>
@@ -900,14 +880,6 @@
                 </tr>
             </table>
         </tr>
-        <!--<tr>
-            <td>
-                <label class="fileButton" for="inputImage">Load from Image</label>
-                <input type="file"
-                    id="inputImage" name="inputImage"
-                    accept="image/png">
-            </td>
-        </tr>-->
     </table>
     <style>
         .fileButton label {
