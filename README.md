@@ -2,13 +2,15 @@
 A convenient program for making it easier to create sprites and animations for the Jack (Hack) platform. 
 
 ## Version
-2.7 (added an import feature for 24-bit .bmp files and .png files)
+2.8 (See [changelog](#changelog) for details)
 
 ## Background
 Made for use in the course nand2tetris <https://nand2tetris.org>
 
 ## Usage
 Open JackBitmapEditor.html in a browser and get creative.
+
+Or simply visit the nand2tetris [web IDE](https://nand2tetris.github.io/web-ide/bitmap)
 
 ## Demo
 [![Video Demo](https://img.youtube.com/vi/a9NakmoimJI/0.jpg)](https://www.youtube.com/watch?v=a9NakmoimJI)
@@ -49,8 +51,13 @@ By generating code directly in assembly, the result can be significantly more ef
 ##### Import
 You can import a BMP file (24-bit depth) or a PNG file to the canvas. It will act like you drew it on the canvas. Only use colors black (#000000) and white (#ffffff) to prevent unexpected results.
 
+## Changelog
+* 2.8: save more settings to local storage (instead of just the grid)
+* 2.7: added an import feature for 24-bit .bmp files and .png files
+* 2.6: added localStorage to save drawing even if tab is closed
+
 ## Contributers
-Golan Parashi, Ignacio del Valle Alles, Erik Umble, Dino Krivić and Noa Vermeersch (Shimon Schocken and Noam Nisan developed the Jack programming language).
+Golan Parashi, Ignacio del Valle Alles, Erik Umble, Dino Krivić,  Noa Vermeersch, and Neta London. Shimon Schocken and Noam Nisan developed the Jack programming language.
 If you think of any improvements, feel free to submit an issue or a pull request.
 
 ## License
