@@ -2,7 +2,7 @@
 A convenient program for making it easier to create sprites and animations for the Jack (Hack) platform. 
 
 ## Version
-2.8 (See [changelog](#changelog) for details)
+2.9 (See [changelog](#changelog) for details)
 
 ## Background
 Made for use in the course nand2tetris <https://nand2tetris.org>
@@ -53,6 +53,7 @@ You can import a BMP file (24-bit depth) or a PNG file to the canvas. It will ac
 size will become the image size (rouned up to nearest multiple of 16 in height and width).
 
 ## Changelog
+* 2.9: fix [bugs](https://github.com/ErikUmble/JackBitmapEditor/issues/7) involving invalid or empty initial local storage state
 * 2.8: save more settings to local storage (instead of just the grid)
 * 2.7: added an import feature for 24-bit .bmp files and .png files
 * 2.6: added localStorage to save drawing even if tab is closed
