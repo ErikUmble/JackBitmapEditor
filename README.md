@@ -1,3 +1,9 @@
+# Archive Notice
+This bitmap editor is now [included](https://github.com/nand2tetris/web-ide/pull/627) in the official [nand2tetris web-ide repository](https://github.com/nand2tetris/web-ide)
+as a React component. 
+
+This repository is archived to avoid maintaining two versions of the same tool. For contributions and issues, please submit to the [nand2tetris web-ide repository](https://github.com/nand2tetris/web-ide). If you need to contact me about this project, feel free to leave a comment on the demo video below.
+
 # JackBitmapEditor
 A convenient program for making it easier to create sprites and animations for the Jack (Hack) platform. 
 
@@ -59,7 +65,7 @@ size will become the image size (rouned up to nearest multiple of 16 in height a
 * 2.6: added localStorage to save drawing even if tab is closed
 
 ## Contributers
-Golan Parashi, Ignacio del Valle Alles, Erik Umble, Dino Krivić,  Noa Vermeersch, and Neta London. Shimon Schocken and Noam Nisan developed the Jack programming language.
+Golan Parashi, Ignacio del Valle Alles, Erik Umble, Dino Krivić,  Noa Vermeersch, Neta London, and Renan Bazinin. Shimon Schocken and Noam Nisan developed the Jack programming language.
 If you think of any improvements, feel free to submit an issue or a pull request.
 
 ## License
